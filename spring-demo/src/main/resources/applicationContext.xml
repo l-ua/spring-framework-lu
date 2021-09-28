@@ -1,0 +1,18 @@
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"-->
+<!--	   xsi:schemaLocation="        http://www.springframework.org/schema/beans        https://www.springframework.org/schema/beans/spring-beans.xsd">-->
+<!--	<bean class="com.lu.test.beanlife.MyInstantiationAwareBeanPostProcessor"/>-->
+<!--	<bean id="userBean" class="com.lu.test.beanlife.UserBean" init-method="myInit"-->
+<!--		  destroy-method="myDestroy">        &lt;!&ndash; 构造函数注入 &ndash;&gt;-->
+<!--		<constructor-arg index="0" type="int">-->
+<!--			<value>1</value>-->
+<!--		</constructor-arg>-->
+<!--		<constructor-arg index="1" type="java.lang.String">-->
+<!--			<value>lu</value>-->
+<!--		</constructor-arg>        &lt;!&ndash; setter方法注入 &ndash;&gt;-->
+<!--		<property name="id" value="2"/>-->
+<!--		<property name="name" value="luname"/>-->
+<!--	</bean>-->
+<!--	<bean class="com.lu.test.beanlife.MyBeanPostProcessor"/>-->
+<!--	<bean class="com.lu.test.beanlife.MyBeanFactoryPostProcessor"/>-->
+<!--</beans>-->

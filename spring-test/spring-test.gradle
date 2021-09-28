@@ -1,0 +1,115 @@
+description = "Spring TestContext Framework"
+
+apply plugin: "kotlin"
+
+dependencies {
+	api(project(":spring-core"))
+	optional(project(":spring-aop"))
+	optional(project(":spring-beans"))
+	optional(project(":spring-context"))
+	optional(project(":spring-jdbc"))
+	optional(project(":spring-orm"))
+	optional(project(":spring-tx"))
+	optional(project(":spring-web"))
+	optional(project(":spring-webflux"))
+	optional(project(":spring-webmvc"))
+	optional(project(":spring-websocket"))
+	optional("jakarta.activation:jakarta.activation-api")
+	optional("jakarta.el:jakarta.el-api")
+	optional("jakarta.inject:jakarta.inject-api")
+	optional("jakarta.servlet:jakarta.servlet-api")
+	optional("jakarta.servlet.jsp:jakarta.servlet.jsp-api")
+	optional("jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api")
+	optional("jakarta.xml.bind:jakarta.xml.bind-api")
+	optional("jakarta.websocket:jakarta.websocket-api")
+	optional("junit:junit")
+	optional("org.apache.tomcat.embed:tomcat-embed-core")
+	optional("org.junit.jupiter:junit-jupiter-api")
+	optional("org.testng:testng")
+	optional("org.aspectj:aspectjweaver")
+	optional("org.codehaus.groovy:groovy")
+	optional("org.hamcrest:hamcrest")
+	optional("net.sourceforge.htmlunit:htmlunit")
+	optional("org.seleniumhq.selenium:htmlunit-driver") {
+		exclude group: "net.bytebuddy", module: "byte-buddy"
+	}
+	optional("org.seleniumhq.selenium:selenium-java") {
+		exclude group: "net.bytebuddy", module: "byte-buddy"
+	}
+	optional("org.xmlunit:xmlunit-matchers")
+	optional("org.skyscreamer:jsonassert")
+	optional("com.jayway.jsonpath:json-path")
+	optional("org.jetbrains.kotlin:kotlin-reflect")
+	optional("org.jetbrains.kotlin:kotlin-stdlib")
+	optional("io.projectreactor:reactor-test")
+	optional("org.jetbrains.kotlinx:kotlinx-coroutines-core")
+	optional("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+	testImplementation(project(":spring-context-support"))
+	testImplementation(project(":spring-oxm"))
+	testImplementation(testFixtures(project(":spring-beans")))
+	testImplementation(testFixtures(project(":spring-context")))
+	testImplementation(testFixtures(project(":spring-core")))
+	testImplementation(testFixtures(project(":spring-tx")))
+	testImplementation(testFixtures(project(":spring-web")))
+	testImplementation("jakarta.annotation:jakarta.annotation-api")
+	testImplementation("javax.cache:cache-api")
+	testImplementation("jakarta.ejb:jakarta.ejb-api")
+	testImplementation("jakarta.interceptor:jakarta.interceptor-api")
+	testImplementation("jakarta.mail:jakarta.mail-api")
+	testImplementation("org.hibernate:hibernate-core-jakarta")
+	testImplementation("org.hibernate:hibernate-validator")
+	testImplementation("jakarta.validation:jakarta.validation-api")
+	testImplementation("org.junit.platform:junit-platform-runner") {
+		exclude group: "junit", module: "junit"
+	}
+	testImplementation("org.junit.platform:junit-platform-testkit")
+	testImplementation("com.fasterxml.jackson.core:jackson-databind")
+	testImplementation("com.thoughtworks.xstream:xstream")
+	testImplementation("com.rometools:rome")
+	testImplementation("org.hsqldb:hsqldb")
+	testImplementation("org.apache.httpcomponents:httpclient")
+	testImplementation("io.projectreactor.netty:reactor-netty-http")
+	testImplementation("de.bechte.junit:junit-hierarchicalcontextrunner")
+	testRuntimeOnly("org.junit.vintage:junit-vintage-engine") {
+		exclude group: "junit", module: "junit"
+	}
+	testRuntimeOnly("org.glassfish:jakarta.el")
+	testRuntimeOnly("com.sun.xml.bind:jaxb-core")
+	testRuntimeOnly("com.sun.xml.bind:jaxb-impl")
+}
+
+task junit(type: Test) {
+	description = "Runs JUnit 4 and JUnit Jupiter tests."
+	useJUnitPlatform {
+		excludeTags "failing-test-case"
+	}
+	include(["**/*Tests.class", "**/*Test.class"])
+	exclude(["**/testng/**/*.*"])
+	systemProperty("testGroups", project.properties.get("testGroups"))
+	// Java Util Logging for the JUnit Platform.
+	// systemProperty("java.util.logging.manager", "org.apache.logging.log4j.jul.LogManager")
+}
+
+task testNG(type: Test) {
+	description = "Runs TestNG tests."
+	useTestNG()
+	include(["**/testng/**/*Tests.class", "**/testng/**/*Test.class"])
+	systemProperty("testGroups", project.properties.get("testGroups"))
+	// Show STD_OUT & STD_ERR of the test JVM(s) on the console:
+	// testLogging.showStandardStreams = true
+	// forkEvery 1
+}
+
+test {
+	description = "Runs all tests."
+	dependsOn junit, testNG
+	exclude(["**/*.*"])
+}
+
+task aggregateTestReports(type: TestReport) {
+	description = "Aggregates JUnit and TestNG test reports."
+	destinationDir = test.reports.html.outputLocation.get().getAsFile()
+	reportOn junit, testNG
+}
+
+check.dependsOn aggregateTestReports
